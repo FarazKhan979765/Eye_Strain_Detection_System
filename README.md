@@ -1,6 +1,6 @@
 # 👁️ EYRA - Eyes-Strain Real-time Assistance
 
-![EYRA Banner](images/demo.png)
+![EYRA Banner](images/demo.jpeg)
 ## 📄 Overview
 **EYRA** is a computer vision-based desktop application designed to combat **Computer Vision Syndrome (CVS)**. It acts as an intelligent background assistant that monitors user eye fatigue in real-time.
 
