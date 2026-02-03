@@ -1,0 +1,15 @@
+# Ignore the Virtual Environment
+venv/
+
+# Ignore Python Cache (Junk)
+__pycache__/
+
+# Ignore Executable Build Folders (Huge & Useless for GitHub)
+build/
+dist/
+
+# Ignore PyInstaller Spec files (Optional, but keeps it clean)
+*.spec
+
+# Ignore Temporary Runner Files
+tempCodeRunnerFile.py

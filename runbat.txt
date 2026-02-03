@@ -1,0 +1,208 @@
+@echo off
+call Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+call venv\Scripts\activate
+python main.py
+pause
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+.\venv\Scripts\activate
+
+
+# import cv2 #opencv
+# import mediapipe as mp
+# import numpy as np
+# import time
+# # from playsound import playsound
+# import pygame
+
+# def calculate_EAR(eye_points, landmarks, frame_width, frame_height):
+#     # Convert normalized landmarks to pixel coordinates
+#     def get_point(idx):
+#         x = int(landmarks[idx].x * frame_width)
+#         y = int(landmarks[idx].y * frame_height)
+#         return np.array([x, y])
+
+#     p1 = get_point(eye_points[0])
+#     p2 = get_point(eye_points[1])
+#     p3 = get_point(eye_points[2])
+#     p4 = get_point(eye_points[3])
+#     p5 = get_point(eye_points[4])
+#     p6 = get_point(eye_points[5])
+
+#     # Compute distances
+#     vertical1 = np.linalg.norm(p2 - p6)
+#     vertical2 = np.linalg.norm(p3 - p5)
+#     horizontal = np.linalg.norm(p1 - p4)
+
+#     EAR = (vertical1 + vertical2) / (2.0 * horizontal)
+#     return EAR
+
+# mp_face_mesh = mp.solutions.face_mesh
+
+# # Initialize the webcam
+# cap = cv2.VideoCapture(0)
+
+# with mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5) as face_mesh:
+    
+#     blink_counter_C1 = 0 #to count blinks
+#     blink_counter_C2 = 0 #to count blinks
+#     frame_counter = 0 #to count frames where eyes are closed
+#     blink_detected_C1 = False #flag to indicate if a blink has been detected
+#     blink_detected_C2 = False #flag to indicate if a blink has been detected
+#     time_start_C1= time.time() #seconds #
+#     time_start_C2= time.time() #seconds #
+#     timeperiod_C1= 0 #seconds
+#     timeperiod_C2= 0 #seconds
+
+
+#     while True:
+#         ret, frame = cap.read()
+#         if not ret:
+#             print("Error: Failed to capture frame.")
+#             break
+        
+#         frame= cv2.flip(frame, 1)
+#         # Convert the image to RGB
+#         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#         results = face_mesh.process(rgb_frame)
+
+#         if results.multi_face_landmarks:
+#             for face_landmarks in results.multi_face_landmarks:
+               
+#                 #These are the indices for left eye 
+#                 left_eye_indices = [362, 385, 387, 263, 373, 380]
+#                 left_eye_points = np.array([
+#                     [int(face_landmarks.landmark[idx].x * frame.shape[1]),
+#                     int(face_landmarks.landmark[idx].y * frame.shape[0])]
+#                     for idx in left_eye_indices
+#                 ], np.int32)
+
+#                 #Connect the points with green lines... isClosed=True to close the loop
+#                 cv2.polylines(frame, [left_eye_points], isClosed=True, color=(0, 255, 0), thickness=1)
+                
+#                 # For right eye
+#                 right_eye_indices = [33, 160, 158, 133, 153, 144]
+#                 right_eye_points = np.array([
+#                     [int(face_landmarks.landmark[idx].x * frame.shape[1]),
+#                     int(face_landmarks.landmark[idx].y * frame.shape[0])]
+#                     for idx in right_eye_indices
+#                 ], np.int32)
+                
+#                 #Connect the points with green lines... isClosed=True to close the loop
+#                 cv2.polylines(frame, [right_eye_points], isClosed=True, color=(0, 255, 0), thickness=1)
+
+#                 # Calculate EAR for both eyes
+#                 left_EAR = calculate_EAR(left_eye_indices, face_landmarks.landmark, frame.shape[1], frame.shape[0])
+#                 right_EAR = calculate_EAR(right_eye_indices, face_landmarks.landmark, frame.shape[1], frame.shape[0])
+
+#                 avg_EAR = (left_EAR + right_EAR) / 2.0
+
+#                 # Display EAR on screen
+#                 cv2.putText(frame, f"EAR: {avg_EAR:.2f}", (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+
+#                 '''Real-Life Example
+#                     Let’s say you’re monitoring a student during screen time:
+#                     - EAR stays around 0.30 → eyes are open, focused.
+#                     - EAR drops to 0.18 for 3 frames → blink detected.
+#                     - EAR stays below 0.20 for 2 seconds → possible eye strain or drowsiness.
+#                     You can use this logic to trigger alerts in EYRA like:
+#                     "Your eyes whisper for rest..."
+#                     "A blink is a breath—take one."'''
+
+#                 # EAR thresholds
+#                 EAR_OPEN = 0.25
+#                 EAR_PARTIAL = 0.20
+
+#                 # Check eye state based on EAR
+#                 if avg_EAR < EAR_PARTIAL:
+#                     cv2.putText(frame, "Blink Detected", (30, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                    
+#                 elif avg_EAR < EAR_OPEN:
+#                     cv2.putText(frame, "Eyes Partially Closed", (30, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 165, 255), 2)
+
+#                 else:
+#                     cv2.putText(frame, "Eyes Open", (30, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)  
+
+#                 # Blink detection logic C1
+#                 if avg_EAR < EAR_PARTIAL:
+#                     frame_counter += 1
+#                     if frame_counter >= 3 and not blink_detected_C1: 
+#                         blink_counter_C1 += 1
+#                         blink_detected_C1 = True
+                        
+#                         # cv2.putText(frame, f"BLINK:{blink_counter}", (30, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)  
+
+#                         # cv2.putText(frame, f"BLINK:{blink_counter}", (30, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+
+#                 else:
+#                     frame_counter = 0
+#                     blink_detected_C1 = False
+                    
+#                 cv2.putText(frame, f"BLINK_C1: {blink_counter_C1}", (30, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)  
+                
+#                 # Blink detection logic C2
+#                 if avg_EAR < EAR_PARTIAL:
+#                     frame_counter += 1
+#                     if frame_counter >= 3 and not blink_detected_C2: 
+#                         blink_counter_C2 += 1
+#                         blink_detected_C2 = True
+#                         # cv2.putText(frame, f"BLINK:{blink_counter}", (30, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)  
+
+#                         # cv2.putText(frame, f"BLINK:{blink_counter}", (30, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+
+#                 else:
+#                     frame_counter = 0
+#                     blink_detected_C2 = False
+                    
+#                 cv2.putText(frame, f"BLINK_C2: {blink_counter_C2}", (30, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                
+#                 # Calculate time period for both counters
+#                 time_end= time.time() #seconds
+#                 timeperiod_C1= time_end - time_start_C1 #seconds
+#                 timeperiod_C2= time_end - time_start_C2 #seconds
+
+#                 # Logic for less than 1 blink in 10 seconds
+#                 if blink_counter_C1 <=1 and timeperiod_C1 >= 10: #less than 1 blink in 10 seconds
+#                     cv2.putText(frame, "Eyes are opened for long! Blink more often.",(30, 170),cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+                    
+#                     #pygame to play audio (Just to Check the working of the logics)
+#                     pygame.mixer.init()
+#                     pygame.mixer.music.load("audios/beep.mp3")
+#                     pygame.mixer.music.play()  
+
+#                     blink_counter_C1 = 0 #reset blink counter
+#                     time_start_C1= time.time() #reset time period
+                
+#                 elif blink_counter_C1 >=2: #more than 2 blinks in 10 seconds
+#                     # timeperiod=0 #reset time period
+#                     blink_counter_C1 = 0 #reset blink counter
+#                     time_start_C1= time.time() #reset time period
+
+#                 cv2.putText(frame, f"TIME: {int(timeperiod_C1)}s", (30, 210), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+
+#                 # Logic for more than 6 blinks in 10 seconds
+#                 if blink_counter_C2 > 6 and timeperiod_C2 <= 10: #every 6 blinks in 10 seconds
+#                     cv2.putText(frame, "Take a short break!", (30, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+
+#                     #pygame to play audio (Just to Check the working of the logics)
+#                     pygame.mixer.init()
+#                     pygame.mixer.music.load("audios/aww.mp3")
+#                     pygame.mixer.music.play()
+
+#                     blink_counter_C2 = 0 #reset blink counter
+#                     time_start_C2= time.time() #reset time period
+
+#                 elif blink_counter_C2 >=7 and timeperiod_C2 >= 10: #more than 2 blinks in 10 seconds
+#                     # timeperiod=0 #reset time period
+#                     blink_counter_C2 = 0 #reset blink counter
+#                     time_start_C2= time.time() #reset time period
+
+#                 cv2.putText(frame, f"TIME: {int(timeperiod_C2)}s", (30, 250), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+                    
+#         cv2.imshow('EYRA AI', frame)
+
+#         if cv2.waitKey(1)==27 or cv2.getWindowProperty("EYRA AI", cv2.WND_PROP_VISIBLE) < 1: #27 is the ASCII code for the ESC key 
+#             break
+        
+# cap.release()
+# cv2.destroyAllWindows()
