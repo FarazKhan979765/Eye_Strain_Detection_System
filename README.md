@@ -1,4 +1,4 @@
-# 👁️ Eye Strain etection System (EYRA)
+# 👁️ Eye Strain Detection System (EYRA)
 
 ![EYRA Banner](images/demo.jpeg)
 ## 📄 Overview
