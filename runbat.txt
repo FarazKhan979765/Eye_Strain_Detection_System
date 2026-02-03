@@ -1,13 +1,8 @@
-@echo off
-call Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-call venv\Scripts\activate
-python main.py
-pause
-
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 .\venv\Scripts\activate
 
 
+# THIS IS CORE LOGIC (IGNORE IT)
 # import cv2 #opencv
 # import mediapipe as mp
 # import numpy as np
@@ -206,3 +201,21 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
         
 # cap.release()
 # cv2.destroyAllWindows()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
