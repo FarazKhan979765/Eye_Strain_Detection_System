@@ -1,18 +1,10 @@
 # 👁️ EYRA - Eyes-Strain Real-time Assistance
 
-![EYRA Banner](demo.png)
-
+![EYRA Banner](images/demo.png)
 ## 📄 Overview
 **EYRA** is a computer vision-based desktop application designed to combat **Computer Vision Syndrome (CVS)**. It acts as an intelligent background assistant that monitors user eye fatigue in real-time.
 
 Built with **Python** and **PyQt6**, it uses a dual-process architecture to process AI tasks without freezing the user interface. It strictly enforces the medical **20-20-20 Rule** to ensure long-term eye health for students and professionals.
-
----
-
-## 📸 Interface Demo
-| Normal State (Safe) | Alert State (Fatigue Detected) |
-| :---: | :---: |
-| The interface glows **BLUE** when blink rate is normal and eyes are open. | The interface turns **RED** and sounds an alarm if the user stares for too long. |
 
 ---
 
