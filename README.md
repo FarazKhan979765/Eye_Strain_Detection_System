@@ -1,4 +1,4 @@
-# 👁️ EYRA - Eyes-Strain Real-time Assistance
+# 👁️ Eye Strain etection System (EYRA)
 
 ![EYRA Banner](images/demo.jpeg)
 ## 📄 Overview
